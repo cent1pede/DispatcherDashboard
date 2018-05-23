@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="moment.min.js"></script>
+    <script src="datepair.min.js"></script>
+    <script src="jquery.timepicker.min.js"></script>
+</head>
+
+<body>
+
+    <select name="" id="" class="selclass">
+                        <option>Alexey Golovlev</option>
+                        <option>Alexey Kozlov</option>
+                        <option>Mikhail Kotyukov</option>
+                        <option>Pavel Chilimov</option>
+                        <option>Vyacheslav Zakharenkov</option>
+                    </select>
+
+
+    <div class="meetingrecord" id="fillablemeeting"><input class="meetingtime" id="meetingstart" pattern="^1[0-9]-[0-5][0-9]$" autocomplete="off"><input class="meetingtime" id="meetingend" pattern="^1[0-9]-[0-5][0-9]$" autocomplete="off"><select class="meetingselector" id="meetingperson"><option disabled="" value="<Choose a person>">&lt;Choose a person&gt;</option><option value="Alexey Golovlev">Alexey Golovlev</option><option value="Alexey Kozlov">Alexey Kozlov</option><option value="Alexey Vokhmanov">Alexey Vokhmanov</option><option value="Dmitry Minin">Dmitry Minin</option><option value="Mikhail Balashov">Mikhail Balashov</option><option value="Mikhail Kotyukov">Mikhail Kotyukov</option><option value="Nikita Trushnikov">Nikita Trushnikov</option><option value="Pavel Chilimov">Pavel Chilimov</option><option value="Pavel S Alexandrov">Pavel S Alexandrov</option><option value="Sergey Alexeev">Sergey Alexeev</option><option value="Tatyana Pokhodyaeva">Tatyana Pokhodyaeva</option><option value="Valeriya Lyameborshay">Valeriya Lyameborshay</option><option value="Vladimir Vasilyev">Vladimir Vasilyev</option><option value="Vyacheslav Zakharenkov">Vyacheslav Zakharenkov</option></select><button class="meetingcreator">Add</button></div>
+
+
+
+</body>
+
+<script>
+    var selected;
+    $(".selclass").each(function() {
+        var theValue = $(this).val();
+        $(this).data("value", theValue);
+    });
+
+    $('.selclass').change(function() {
+        selected = $(this).val();
+        //$(this).data('current',$(this).val());
+
+        if (selected == 'Mikhail Kotyukov') {
+            if (!confirm('Are you sure?')) {
+                $(this).val($.data(this, 'value'));
+                return false;
+            }
+        }
+
+        $.data(this, 'value', $(this).val());
+    });
+
+    var anchorExampleEl = document.getElementById('fillablemeeting');
+    var anchorDatepair = new Datepair(anchorExampleEl, {
+        anchor: $('#meetingstart').val()
+    });
+
+    $('#meetingstart').on('change', function() {
+        anchorDatepair.option('anchor', $('#meetingstart').val());
+    });
+
+</script>
+
+</html>

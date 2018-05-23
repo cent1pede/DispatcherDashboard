@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>train</title>
+    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery.timepicker.min.js"></script>
+    <link rel="stylesheet" href="jquery.timepicker.min.css">
+    <link rel="stylesheet" href="jquery-ui.min.css">
+    <script src="jquery-ui.min.js"></script>
+    <script src="pouchdb-6.4.3.min.js"></script>
+    <script src="uvcharts.min.js"></script>
+    <script src="datepair.min.js"></script>
+    <script src="jquery.datepair.min.js"></script>
+    <script src="moment.min.js"></script>
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js">
+
+
+    </script>
+    <script src="script.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="uv-div"></div>
+
+        <div id="controls">
+           
+            <div id="usercontainer">
+            </div>
+            <button id="roleupdater" onclick="updateRoles()">Update roles</button>
+
+           
+            <div id="lunches"></div>
+            <button id="lunchupdater" onclick="updateLunches()">Update lunches</button>
+
+
+            <div id="meetings">
+            </div>
+            <button id="meetingupdater">Update meetings</button>
+
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
