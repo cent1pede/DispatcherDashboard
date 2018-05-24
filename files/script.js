@@ -64,6 +64,22 @@ function getAllBacklog(emplArray) {
 
 }
 
+
+function cutLongNames(potentiallyLongName){
+    
+    if(potentiallyLongName.length>=21){
+        
+        var longName = potentiallyLongName.split(' ')[0];
+        var longSurname = potentiallyLongName.split(' ')[1];
+        
+        longName = longName.charAt(0) + '.';
+            
+        return longName + ' ' + longSurname;
+        
+    } else return potentiallyLongName;
+    
+}
+
 function formTickets(specArray, resposeObject) {
 
     console.log("func started");
@@ -96,13 +112,13 @@ function formTickets(specArray, resposeObject) {
 
         // $('#tickets').append(<li>)
         var temp = {
-            name: specArray[i],
+            name: cutLongNames(specArray[i]),
             value: resolvedTickets
             //   value: (Math.floor(Math.random() * 130) + 4)
         };
 
         var temp2 = {
-            name: specArray[i],
+            name: cutLongNames(specArray[i]),
             value: ownedTickets
             //         value: (Math.floor(Math.random() * 25) + 1)
         };
@@ -201,6 +217,8 @@ function updateOld() {
 
 }
 
+var dbGlobal = new PouchDB('http://firstlinetools.avp.ru:5984/mydatabase');
+
 
 $(document).ready(function () {
 
@@ -225,6 +243,23 @@ $(document).ready(function () {
 
         checkCollisions(this, 'role');
         console.log('momo');
+
+
+    });
+
+
+    $('body').on('click', '.cge-assigned', function () {
+
+        var emplTitle = $(this).find('title').text().split('[')[1].split(']')[0];
+
+        var assignedToField = '1000000218';
+        var assignedGroupField = '1000000217';
+        var statusField = '7';
+
+
+        var emptyLink = 'https://servicedesk.avp.ru/arsys/forms/itsmapp/SHR%3ALandingConsole/Default+Administrator+View/?mode=search&F304255500=HPD:Help%20Desk&F1000000076=FormOpen&F303647600=SearchTicketWithQual&F303647600=SearchTicketWithQual&F304255610=\'' + statusField + '\'="Assigned" AND (\'' + assignedToField + '\'="' + emplTitle + '" OR \'Owner\'="' + emplTitle + '") AND \'' + assignedGroupField + '\'="SD FIRST"';
+
+        window.open(emptyLink, '_blank');
 
 
     });
@@ -454,7 +489,11 @@ $(document).ready(function () {
             if ($('.cge-assigned').length == 0) {
 
                 setTimeout(function () {
+
+                    console.log('Entered timeout');
                     $('.cge-assigned').each(function () {
+
+                        console.log('Entered cge-assigned');
 
                         var assignedToField = '1000000218';
                         var statusField = '7';
@@ -471,12 +510,129 @@ $(document).ready(function () {
 
                         var link = $('<a/>').attr('href', emptyLink);
 
-                      //  $(this).wrap('<a href="#"/>');
+                        //  $(this).wrap('<a href="#"/>');
 
 
                     });
 
-                },2000);
+
+                    $('.uv-ver-axis').find('.tick.major').each(function () {
+                        console.log('Entered tick major');
+
+                        var axisName = $(this).find('text').text();
+
+                        console.log('axisname: ' + axisName);
+
+                        for (i in response.rows) {
+                            if (axisName == response.rows[i].doc._id) {
+
+
+
+                                switch (response.rows[i].doc.role) {
+                                    case 'Dispatcher':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', 'red');
+
+                                        $(this).prepend(rect);
+
+                                        $(this).find('text').css('fill', 'white').css('font-weight','bold');
+
+
+                                        break;
+                                    case 'Backup':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', '#D5DDBB');
+
+                                        $(this).prepend(rect);
+                                        
+                                        $(this).find('text').css('fill', 'green').css('font-weight','bold');
+
+                                        break;
+                                    case '1500':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', 'black');
+
+                                        $(this).find('text').css('fill', '#994961').css('font-weight','bold');
+
+                                        $(this).prepend(rect);
+                                        break;
+                                    case '1500 Backup':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', 'grey');
+
+                                        $(this).find('text').css('fill', 'pink').css('font-weight','bold');
+
+                                        $(this).prepend(rect);
+                                        break;
+                                    case 'Advocate':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', '#FEED9E');
+
+                                        $(this).find('text').css('fill', '#C9B458').css('font-weight','bold');
+
+                                        $(this).prepend(rect);
+                                        break;
+                                    default:
+
+                                        break;
+
+
+
+                                }
+
+                                if (response.rows[i].doc.role == '1500 Backup') {
+
+                                    var tmpClass = response.rows[i].doc.role.split(' ')[1] + response.rows[i].doc.role.split(' ')[0];
+
+                                    $(this).prepend('<rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>');
+                                    // $('<rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>').insertBefore(this).find('line');
+
+                                } else {
+
+                                    // $(this).prepend('<rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>');
+                                    //$('<rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>').insertBefore(this).find('line');
+
+
+
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                    })
+
+                    //   <rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>
+
+
+
+
+                }, 2000);
             }
 
 
@@ -762,7 +918,7 @@ function addRemoveMeeting(action) {
 
 function updateRoles() {
 
-    db.allDocs({
+    dbGlobal.allDocs({
             include_docs: true,
             attachments: true
         },
@@ -838,11 +994,11 @@ function updateRoles() {
 
             }
 
-            db.bulkDocs(docs);
+            dbGlobal.bulkDocs(docs);
 
         });
 
-    getAllDocs(db);
+    getAllDocs(dbGlobal);
 
 
 }
@@ -850,7 +1006,7 @@ function updateRoles() {
 
 function updateLunches() {
 
-    db.allDocs({
+    dbGlobal.allDocs({
             include_docs: true,
             attachments: true
         },
@@ -926,7 +1082,7 @@ function updateLunches() {
 
             }
 
-            db.bulkDocs(docs);
+            dbGlobal.bulkDocs(docs);
 
         });
 
