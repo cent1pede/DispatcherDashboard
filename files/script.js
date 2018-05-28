@@ -65,19 +65,19 @@ function getAllBacklog(emplArray) {
 }
 
 
-function cutLongNames(potentiallyLongName){
-    
-    if(potentiallyLongName.length>=21){
-        
+function cutLongNames(potentiallyLongName) {
+
+    if (potentiallyLongName.length >= 21) {
+
         var longName = potentiallyLongName.split(' ')[0];
         var longSurname = potentiallyLongName.split(' ')[1];
-        
+
         longName = longName.charAt(0) + '.';
-            
+
         return longName + ' ' + longSurname;
-        
+
     } else return potentiallyLongName;
-    
+
 }
 
 function formTickets(specArray, resposeObject) {
@@ -112,13 +112,13 @@ function formTickets(specArray, resposeObject) {
 
         // $('#tickets').append(<li>)
         var temp = {
-            name: cutLongNames(specArray[i]),
+            name: specArray[i],
             value: resolvedTickets
             //   value: (Math.floor(Math.random() * 130) + 4)
         };
 
         var temp2 = {
-            name: cutLongNames(specArray[i]),
+            name: specArray[i],
             value: ownedTickets
             //         value: (Math.floor(Math.random() * 25) + 1)
         };
@@ -129,6 +129,22 @@ function formTickets(specArray, resposeObject) {
         }
 
     }
+
+    var backlog = 0;
+    var SLAstopped = 0;
+    for (i in resposeObject) {
+
+        if (resposeObject[i].Status <= 3) backlog++;
+        if (resposeObject[i].Status == 3) SLAstopped++;
+
+    }
+
+    $('#backlog').addClass('backlog');
+    $('#stopped').addClass('stopped');
+
+    $('#backlog').text('Static backlog: ' + backlog);
+    $('#stopped').text('SLA Stopped: ' + SLAstopped);
+
 
     var specForChart = [];
     var seriesForChart = [[]];
@@ -322,6 +338,12 @@ $(document).ready(function () {
 
     });
 
+    $('body').on('click', '.meetingcreator', function () {
+
+        removeMeeting(this);
+
+    });
+
 
 
 
@@ -381,14 +403,14 @@ $(document).ready(function () {
                     disabledOption = $('<option/>')
                     .text('<Choose a person>')
                     .prop('selected', true)
-                    .prop('disabled', true)
+                    // .prop('disabled', true)
                     .prop('value', true)
                     .appendTo(select),
                     select2 = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_2').appendTo(div),
                     disabledOption2 = $('<option/>')
                     .text('<Choose a person>')
                     .prop('selected', true)
-                    .prop('disabled', true)
+                    //  .prop('disabled', true)
                     .prop('value', true)
                     .appendTo(select2);
                 for (j in response.rows) {
@@ -521,12 +543,12 @@ $(document).ready(function () {
 
                         var axisName = $(this).find('text').text();
 
-                        console.log('axisname: ' + axisName);
+
 
                         for (i in response.rows) {
                             if (axisName == response.rows[i].doc._id) {
 
-
+                                console.log('axisname: ' + axisName);
 
                                 switch (response.rows[i].doc.role) {
                                     case 'Dispatcher':
@@ -540,7 +562,17 @@ $(document).ready(function () {
 
                                         $(this).prepend(rect);
 
-                                        $(this).find('text').css('fill', 'white').css('font-weight','bold');
+                                        $(this).find('text').css('fill', 'white').css('font-weight', 'bold');
+                                        $(this).find('text').addClass('blinker');
+                                        $(this).find('text').text(cutLongNames(axisName));
+
+                                        /*   $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "#800;#f00;#800;#800" dur = "0.8s" repeatCount = "indefinite" / >');*/
+
+                                        /*               <animate attributeType = "XML"
+                                                       attributeName = "fill"
+                                                       values = "#800;#f00;#800;#800"
+                                                       dur = "0.8s"
+                                                       repeatCount = "indefinite" / >*/
 
 
                                         break;
@@ -554,9 +586,9 @@ $(document).ready(function () {
                                         rect.setAttributeNS(null, 'fill', '#D5DDBB');
 
                                         $(this).prepend(rect);
-                                        
-                                        $(this).find('text').css('fill', 'green').css('font-weight','bold');
 
+                                        $(this).find('text').css('fill', 'green').css('font-weight', 'bold');
+                                        $(this).find('text').text(cutLongNames(axisName));
                                         break;
                                     case '1500':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -566,9 +598,10 @@ $(document).ready(function () {
                                         rect.setAttributeNS(null, 'width', 140);
                                         rect.setAttributeNS(null, 'fill', 'black');
 
-                                        $(this).find('text').css('fill', '#994961').css('font-weight','bold');
+                                        $(this).find('text').css('fill', '#994961').css('font-weight', '900');
 
                                         $(this).prepend(rect);
+                                        $(this).find('text').text(cutLongNames(axisName));
                                         break;
                                     case '1500 Backup':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -578,9 +611,10 @@ $(document).ready(function () {
                                         rect.setAttributeNS(null, 'width', 140);
                                         rect.setAttributeNS(null, 'fill', 'grey');
 
-                                        $(this).find('text').css('fill', 'pink').css('font-weight','bold');
+                                        $(this).find('text').css('fill', 'pink').css('font-weight', 'bold');
 
                                         $(this).prepend(rect);
+                                        $(this).find('text').text(cutLongNames(axisName));
                                         break;
                                     case 'Advocate':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -590,12 +624,36 @@ $(document).ready(function () {
                                         rect.setAttributeNS(null, 'width', 140);
                                         rect.setAttributeNS(null, 'fill', '#FEED9E');
 
-                                        $(this).find('text').css('fill', '#C9B458').css('font-weight','bold');
+                                        $(this).find('text').css('fill', '#C9B458').css('font-weight', 'bold');
 
                                         $(this).prepend(rect);
-                                        break;
-                                    default:
 
+                                        $(this).find('text').text(cutLongNames(axisName));
+                                        break;
+
+                                    case 'OOO':
+
+                                        $(this).find('text').css('font-weight', 'bold');
+                                        $(this).find('text').css('text-decoration', 'line-through');
+                                        $(this).find('text').text(cutLongNames(axisName));
+                                        break;
+
+                                    case 'Study':
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', '#538dd5');
+
+                                        $(this).find('text').css('fill', 'white').css('font-weight', 'bold');
+
+                                        $(this).prepend(rect);
+
+                                        $(this).find('text').text(cutLongNames(axisName));
+
+                                    default:
+                                        $(this).find('text').text(cutLongNames(axisName));
                                         break;
 
 
@@ -706,42 +764,50 @@ $(document).ready(function () {
 
 
             fillableSelector.appendTo(fillablediv);
-            $('<button/>').addClass('meetingcreator').text('Add').attr('onClick', addRemoveMeeting).appendTo(fillablediv);
+            $('<button/>').addClass('meetingcreator').text('Add').attr('onClick', 'updateMeetings()').appendTo(fillablediv);
 
 
+
+            var meetingsArray = [];
 
             for (i in response.rows) {
 
                 if (response.rows[i].doc.meetings.length != 0) {
                     //    console.log(response.rows[i].doc.meetings);
 
+                    for (j in response.rows[i].doc.meetings) {
 
-                    var meetingSelector = $('<select/>').addClass('meetingselector');
-
-                    for (k in response.rows) {
-
-                        var option = $('<option/>').val(response.rows[k].doc._id).text(response.rows[k].doc._id).appendTo(meetingSelector);
-
+                        meetingsArray.push(response.rows[i].doc.meetings[j]);
 
                     }
 
 
 
-
                     for (j in response.rows[i].doc.meetings) {
+
+                        var meetingSelector = $('<select/>').addClass('meetingselector');
+
+                        for (k in response.rows) {
+
+                            var option = $('<option/>').val(response.rows[k].doc._id).text(response.rows[k].doc._id).appendTo(meetingSelector);
+
+
+                        }
+
+
 
                         var div = $('<div/>')
                             .addClass('meetingrecord')
                             .appendTo('#meetings'),
-                            input = $('<span/>').addClass('meetingtime')
+                            input = $('<span/>').addClass('meetingstart')
                             .text(convertTime(response.rows[i].doc.meetings[j].start) + ' - ')
                             .appendTo(div),
-                            input2 = $('<span/>').addClass('meetingtime')
+                            input2 = $('<span/>').addClass('meetingend')
                             .text(convertTime(response.rows[i].doc.meetings[j].end))
                             .appendTo(div);
                         meetingSelector.val(response.rows[i].doc._id).appendTo(div).attr('disabled', true);
 
-                        var removeButton = $('<button/>').addClass('meetingcreator').text('Remove').attr('onClick', addRemoveMeeting).appendTo(div);
+                        var removeButton = $('<button/>').addClass('meetingcreator').text('Remove').appendTo(div);
 
 
 
@@ -754,21 +820,19 @@ $(document).ready(function () {
                     }
 
 
-                    /*
-                                    var div = $('<div/>').addClass('lunchrecord').appendTo('#lunches'),
-                                        div2 = $('<div/>').addClass('time').text(lunchtime[i]).appendTo(div),
-                                        select = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_1').appendTo(div),
-                                        disabledOption = $('<option/>')
-                                        .text('<Choose a person>')
-                                        .prop('selected', true)
-                                        .prop('disabled', true)
-                                        .prop('value', true)
-                                        .appendTo(select),*/
+
+
+
+
                 }
 
+            }
+
+            for (i in meetingsArray) {
 
 
             }
+
 
 
             $('#fillablemeeting .meetingtime').timepicker({
@@ -903,13 +967,151 @@ function convertTime(timeString) {
 
 }
 
-function addRemoveMeeting(action) {
-
-    var testStart = $('#meetingstart').val();
-    var testEnd = $('#meetingstart').val();
+function removeMeeting(clickedButton) {
 
 
-    //  if()
+    var removeMeetingObj = [];
+    var removeMeetingArr = [];
+    var remId = $(clickedButton).parent().find('.meetingselector').find('option:selected').text(),
+        remStart = $(clickedButton).parent().find('.meetingstart').text().split(' ')[0],
+        remEnd = $(clickedButton).parent().find('.meetingend').text();
+
+    var exactRemovalItem = {
+        _id: remId,
+        start: remStart,
+        end: remEnd
+    };
+
+    //alert('ID = '+remId + ' start '+ remStart.split(' ')[0] +' end ' + remEnd );
+
+
+    dbGlobal.get(remId).then(function (doc) {
+
+        for (i in doc.meetings) {
+
+            console.log(i + ' meeting');
+            console.log('start client: ' + remStart.split(' ')[0] + ' start base: ' + convertTime(doc.meetings[i].start));
+
+            console.log('end client: ' + remEnd + ' end base: ' + convertTime(doc.meetings[i].end));
+
+            if (remStart.split(' ')[0] == convertTime(doc.meetings[i].start) && remEnd == convertTime(doc.meetings[i].end)) {
+                    
+                console.log('Yes!');
+                
+                doc.meetings.splice(i, 1);
+                
+                $(clickedButton).parent().remove();
+               
+                return dbGlobal.put(doc);
+
+            }
+
+        }
+
+    });
+
+    /*
+
+        $(".lunchselector").each(function () {
+
+            //     alert($(this).attr("name"));
+            //    alert($(this).attr('id') + " " + $(this).children("option:selected").text());//.each(function () {
+
+
+            if ($(this).find('option:selected').text() == $(clickedButton).parent().find('.meetingselector').find('option:selected').text()) {
+
+
+                var tempObj = {
+                    _id: "",
+                    meeting: ""
+                };
+
+                tempObj._id = $(this).find('option:selected').text();
+                tempObj.lunch = $(this).attr('id').split('_')[0];
+
+                removeMeetingObj.push(tempObj);
+                removeMeetingObj.push(tempObj._id);
+
+            }
+
+            //   });
+        });
+
+    */
+
+
+
+    // alert($(clickedButton).parent().find('.meetingselector').find('option:selected').text());
+
+
+
+    /*    dbGlobal.allDocs({
+                include_docs: true,
+                attachments: true
+            },
+            function (err, response) {
+                if (err) {
+                    return console.log(err);
+                }
+                updateResponse = response;
+
+
+                for (var i = 0; i < updateResponse.rows.length; i++) {
+
+                    if (updateResponse.rows[i].doc._id == )
+
+
+                        for (var j = 0; j < rolesObj.length; j++) {
+
+
+                            console.log(i + ":" + j);
+
+                            if (rolesObj[j]._id == updateResponse.rows[i].doc._id) {
+
+                                console.log("----");
+                                console.log(i + ":" + j);
+                                console.log(rolesObj[j]._id == updateResponse.rows[i].doc._id);
+                                console.log("rolesObj: " + rolesObj[j]._id);
+                                console.log("updateResponse: " + updateResponse.rows[i].doc._id);
+                                console.log(rolesObj[j]._id == updateResponse.rows[i].doc._id);
+                                console.log("----");
+
+
+                                var toAdd = updateResponse.rows[i].doc;
+
+                                toAdd.role = rolesObj[j].role;
+
+                                docs.push(toAdd);
+                                
+                                {
+                                    "_id": "Alexey Kozlov",
+                                    "_rev": "7-647c36dbec61a87ddb8c0cefc14aa606",
+                                    "role": "Analyst",
+                                    "lunch": "",
+                                    "meetings": {},
+                                    "issupervisor": false
+                                }
+                        
+                                
+
+                            }
+
+                        }
+
+
+                }
+
+                dbGlobal.bulkDocs(docs);
+
+            });*/
+
+    // getAllDocs(dbGlobal);
+
+
+
+
+
+
 
 
 
@@ -998,13 +1200,16 @@ function updateRoles() {
 
         });
 
+    //???
     getAllDocs(dbGlobal);
-
+    location.reload();
 
 }
 
 
 function updateLunches() {
+
+    var lunchdocs = [];
 
     dbGlobal.allDocs({
             include_docs: true,
@@ -1017,8 +1222,10 @@ function updateLunches() {
             updateResponse = response;
 
             var lunchObj = [{}];
+            var luncharray = [];
 
             $(".lunchselector").each(function () {
+
                 //     alert($(this).attr("name"));
                 //    alert($(this).attr('id') + " " + $(this).children("option:selected").text());//.each(function () {
 
@@ -1026,13 +1233,14 @@ function updateLunches() {
                 if ($(this).find('option:selected').text() != '<Choose a person>') {
                     var tempObj = {
                         _id: "",
-                        role: ""
+                        lunch: ""
                     };
 
                     tempObj._id = $(this).find('option:selected').text();
                     tempObj.lunch = $(this).attr('id').split('_')[0];
 
                     lunchObj.push(tempObj);
+                    luncharray.push(tempObj._id);
 
                 }
 
@@ -1062,7 +1270,8 @@ function updateLunches() {
 
                         toAdd.lunch = lunchObj[j].lunch;
 
-                        docs.push(toAdd);
+                        lunchdocs.push(toAdd);
+
                         /*
                             {
                                 "_id": "Alexey Kozlov",
@@ -1077,18 +1286,127 @@ function updateLunches() {
 
                     }
 
+
+
+
                 }
 
 
             }
 
-            dbGlobal.bulkDocs(docs);
+
+
+            /*        for (var i=0;i<lunchObj.length; i++){
+                        
+                        luncharray.push()
+                    }*/
+
+            for (var i = 0; i < updateResponse.rows.length; i++) {
+
+                if ($.inArray(updateResponse.rows[i].doc._id, luncharray) == -1) {
+                    var tempObj = {
+                        _id: "",
+                        lunch: ""
+                    };
+
+                    var toAdd = updateResponse.rows[i].doc;
+                    toAdd.lunch = "";
+                    lunchdocs.push(toAdd);
+
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+            dbGlobal.bulkDocs(lunchdocs);
+            location.reload();
 
         });
 
 
 
 }
+
+
+function updateMeetings() {
+
+    var meetingdocs = [];
+
+    dbGlobal.allDocs({
+            include_docs: true,
+            attachments: true
+        },
+        function (err, response) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log('UPD SHOT!');
+            updateResponse = response;
+
+            var meetingObj = [{}];
+            var meetingarray = [];
+
+
+            var textToAdd = $('#meetingperson').find('option:selected').text();
+            var startToAdd = $('#meetingstart').val();
+            var endToAdd = $('#meetingend').val();
+
+            for (var i = 0; i < updateResponse.rows.length; i++) {
+
+
+
+                if (textToAdd == updateResponse.rows[i].doc._id) {
+                    console.log('FOUND!!');
+                    var normTimeStart = convertTime(startToAdd);
+                    var normTimeEnd = convertTime(endToAdd);
+                    /*                    var tempObj = {
+                                            _id: textToAdd,
+                                            meetings: [{
+                                                start:normTimeStart.getTime(),
+                                                end:normTimeEnd.getTime()
+                                            }]
+                                        };*/
+
+                    var toAdd = updateResponse.rows[i].doc;
+
+                    console.log(toAdd);
+
+                    var tempMeeting = {
+                        start: normTimeStart.getTime(),
+                        end: normTimeEnd.getTime()
+                    }
+
+
+                    toAdd.meetings.push(tempMeeting);
+
+                    meetingdocs.push(toAdd);
+
+                }
+
+            }
+
+
+
+
+
+            dbGlobal.bulkDocs(meetingdocs);
+            location.reload();
+
+        });
+
+
+
+}
+
+
+
 
 
 function checkCollisions(elementChanged, menuType, oldData) {

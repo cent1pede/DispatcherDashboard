@@ -134,6 +134,49 @@ select option:disabled {
 }
 
 
-#meetingperson {
-    margin-left: 3px;
+.cge-assigned {
+    cursor: pointer;
 }
+
+
+.Dispatcher {
+    background-color: red;
+}
+
+.Backup {
+    color: green;
+}
+
+.backlog {
+    background-color: burlywood;
+    height: 33px;
+    font-size: 30px;
+    width: 250px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 1px;
+}
+
+.stopped {
+    background-color: darkseagreen;
+    height: 33px;
+    font-size: 29px;
+    width: 250px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.meetingend{
+    margin-right: 3px;
+}
+
