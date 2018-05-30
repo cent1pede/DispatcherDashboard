@@ -248,6 +248,26 @@ $(document).ready(function () {
     //      console.log('CLICK function fired');
     //       if (!stopped){
 
+    /*    $('.lunchselector').hover(function (e) {
+
+            alert('hovered!');
+
+        });*/
+
+
+    $('body').on('mouseenter', '.lunchhoverwrapper', function () {
+
+        $(this).addClass('hovmarker');
+
+    });
+
+
+/*    $('body').on('mouseleave', '.lunchselector', function () {
+
+        $(this).toggleClass('hovmarker');
+
+    });*/
+
 
 
 
@@ -344,6 +364,13 @@ $(document).ready(function () {
 
     });
 
+    $('body').on('change', '.lunchselector', function () {
+
+        emptyUnusedField(this);
+
+
+    });
+
 
 
 
@@ -399,20 +426,35 @@ $(document).ready(function () {
 
                 var div = $('<div/>').addClass('lunchrecord').appendTo('#lunches'),
                     div2 = $('<div/>').addClass('time').text(lunchtime[i]).appendTo(div),
-                    select = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_1').appendTo(div),
+                    lunchwrap = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),
+                    lunchwrap2 = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),
+                    lunchwrap3 = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),         
+                    select = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_1').appendTo(lunchwrap),
                     disabledOption = $('<option/>')
                     .text('<Choose a person>')
+                    .val('<Choose a person>')
                     .prop('selected', true)
                     // .prop('disabled', true)
-                    .prop('value', true)
+                    //    .prop('value', true)
                     .appendTo(select),
-                    select2 = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_2').appendTo(div),
+                    select2 = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_2').appendTo(lunchwrap2),
                     disabledOption2 = $('<option/>')
                     .text('<Choose a person>')
+                    .val('<Choose a person>')
                     .prop('selected', true)
                     //  .prop('disabled', true)
-                    .prop('value', true)
-                    .appendTo(select2);
+                    //   .prop('value', true)
+                    .appendTo(select2),
+                    select3 = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_3').appendTo(lunchwrap3),
+                    disabledOption3 = $('<option/>')
+                    .text('<Choose a person>')
+                    .val('<Choose a person>')
+                    .prop('selected', true)
+                    //  .prop('disabled', true)
+                    //   .prop('value', true)
+                    .appendTo(select3);
+
+
                 for (j in response.rows) {
 
                     //                    console.log(response.rows[j].doc._id);
@@ -420,31 +462,42 @@ $(document).ready(function () {
                     //                    console.log(response.rows[j].doc.lunch);
                     //                    console.log(lunchtime[i] == response.rows[j].doc.lunch);
 
-                    if (lunchtime[i] == response.rows[j].doc.lunch) {
+                    if (response.rows[j].doc._id != 'Owner Default') {
 
-                        console.log(response.rows[j].doc._id);
+                        if (lunchtime[i] == response.rows[j].doc.lunch) {
 
-
-                        var selectorString = '#' + lunchtime[i] + '_1 option:selected',
-                            selectorString2 = '#' + lunchtime[i] + '_2 option:selected';;
-
-                        if ($(selectorString).text() == '<Choose a person>') {
+                            console.log(response.rows[j].doc._id);
 
 
-                            //     ('#' + lunchtime[i] + '_1 option:selected').prop('selected',false);
-                            var option = $('<option/>').val(response.rows[j].doc._id).text(response.rows[j].doc._id).prop('selected', true).appendTo(select);
+                            var selectorString = '#' + lunchtime[i] + '_1 option:selected',
+                                selectorString2 = '#' + lunchtime[i] + '_2 option:selected',
+                                selectorString3 = '#' + lunchtime[i] + '_3 option:selected'
+
+                            if ($(selectorString).text() == '<Choose a person>') {
 
 
-                        } else if ($(selectorString2).text() == '<Choose a person>') {
+                                //     ('#' + lunchtime[i] + '_1 option:selected').prop('selected',false);
+                                var option = $('<option/>').val(response.rows[j].doc._id).text(response.rows[j].doc._id).prop('selected', true).appendTo(select);
 
 
-                            var option2 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select2).prop('selected', true);
+                            } else if ($(selectorString2).text() == '<Choose a person>') {
+
+
+                                var option2 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select2).prop('selected', true);
+                            } else if ($(selectorString3).text() == '<Choose a person>') {
+
+                                var option2 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select3).prop('selected', true);
+
+                            }
+
+
+                        } else {
+                            var option = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select),
+                                option2 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select2),
+                                option3 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select3)
+
                         }
 
-
-                    } else {
-                        var option = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select),
-                            option2 = $('<option/>').text(response.rows[j].doc._id).val(response.rows[j].doc._id).appendTo(select2);
                     }
                 }
 
@@ -454,54 +507,56 @@ $(document).ready(function () {
 
             for (i in response.rows) {
 
-                //    console.log((response.rows[i].doc.issupervisor).toString());
-                if (response.rows[i].doc.issupervisor != true) {
-                    var temp = {
-                        name: response.rows[i].id,
-                        //          value: resolvedTickets
-                        value: (Math.floor(Math.random() * 130) + 4)
-                    };
+                if (response.rows[i].doc._id != 'Owner Default') {
 
-                    var temp2 = {
-                        name: response.rows[i].id,
-                        value: (Math.floor(Math.random() * 25) + 1)
-                    };
+                    //    console.log((response.rows[i].doc.issupervisor).toString());
+                    if (response.rows[i].doc.issupervisor == false) {
+                        var temp = {
+                            name: response.rows[i].id,
+                            //          value: resolvedTickets
+                            value: (Math.floor(Math.random() * 130) + 4)
+                        };
 
-                    employeesFromBase.push(response.rows[i].id);
-                    //    seriesArr.push(temp);
-                    //       seriesArr2.push(temp2);
+                        var temp2 = {
+                            name: response.rows[i].id,
+                            value: (Math.floor(Math.random() * 25) + 1)
+                        };
+
+                        employeesFromBase.push(response.rows[i].id);
+                        //    seriesArr.push(temp);
+                        //       seriesArr2.push(temp2);
+
+                    }
+
+                    var selectOptions = $('<select/>').addClass('roleselector').attr('id', response.rows[i].id)
+                        .append('<option value="Analyst">Analyst</option>')
+                        .append('<option value="Dispatcher">Dispatcher</option>')
+                        .append('<option value="Backup">Backup</option>')
+                        .append('<option value="1500">1500</option>')
+                        .append('<option value="1500 Backup">1500 Backup</option>')
+                        .append('<option value="Advocate">Advocate</option>')
+                        .append('<option value="OOO">OOO</option>')
+                        .append('<option value="Study">Study</option>');
+
+                    var role = 'option:contains("' + response.rows[i].doc.role + '")';
+
+                    //selectOptions.find(role).attr("selected", true);
+                    selectOptions.val(response.rows[i].doc.role);
+                    //    $(elementChanged).val(oldValue);
+
+                    var div = $('<div/>').addClass('employee').appendTo('#usercontainer'),
+                        div2 = $('<div/>').addClass('username').text(response.rows[i].id).appendTo(div);
+
+
+
+
+                    //   console.log(i + selectOptions.toString());
+                    div.append(selectOptions);
+                    //  selector = $('<>')
+
+
 
                 }
-
-                var selectOptions = $('<select/>').addClass('roleselector').attr('id', response.rows[i].id)
-                    .append('<option value="Analyst">Analyst</option>')
-                    .append('<option value="Dispatcher">Dispatcher</option>')
-                    .append('<option value="Backup">Backup</option>')
-                    .append('<option value="1500">1500</option>')
-                    .append('<option value="1500 Backup">1500 Backup</option>')
-                    .append('<option value="Advocate">Advocate</option>')
-                    .append('<option value="OOO">OOO</option>')
-                    .append('<option value="Study">Study</option>');
-
-                var role = 'option:contains("' + response.rows[i].doc.role + '")';
-
-                //selectOptions.find(role).attr("selected", true);
-                selectOptions.val(response.rows[i].doc.role);
-                //    $(elementChanged).val(oldValue);
-
-                var div = $('<div/>').addClass('employee').appendTo('#usercontainer'),
-                    div2 = $('<div/>').addClass('username').text(response.rows[i].id).appendTo(div);
-
-
-
-
-                //   console.log(i + selectOptions.toString());
-                div.append(selectOptions);
-                //  selector = $('<>')
-
-
-
-
 
 
             }
@@ -539,7 +594,7 @@ $(document).ready(function () {
 
 
                     $('.uv-ver-axis').find('.tick.major').each(function () {
-                        console.log('Entered tick major');
+                        //  console.log('Entered tick major');
 
                         var axisName = $(this).find('text').text();
 
@@ -548,7 +603,7 @@ $(document).ready(function () {
                         for (i in response.rows) {
                             if (axisName == response.rows[i].doc._id) {
 
-                                console.log('axisname: ' + axisName);
+                                // console.log('axisname: ' + axisName);
 
                                 switch (response.rows[i].doc.role) {
                                     case 'Dispatcher':
@@ -565,6 +620,30 @@ $(document).ready(function () {
                                         $(this).find('text').css('fill', 'white').css('font-weight', 'bold');
                                         $(this).find('text').addClass('blinker');
                                         $(this).find('text').text(cutLongNames(axisName));
+
+
+                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+
+                                            case 0:
+                                                $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "red;#FF8C00;red;red" dur = "3.5s" repeatCount = "indefinite" / >');
+                                                break;
+
+                                            case 1:
+
+                                                $(this).css('fill', 'orange');
+                                                $(this).find('text').css('font-weight', 'bold');
+                                                $(this).find('text').css('outline', '2px solid orange');
+                                                $(this).find('text').text(cutLongNames(axisName));
+
+
+
+                                                break;
+
+                                            case 2:
+
+                                                break;
+
+                                        }
 
                                         /*   $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "#800;#f00;#800;#800" dur = "0.8s" repeatCount = "indefinite" / >');*/
 
@@ -589,6 +668,33 @@ $(document).ready(function () {
 
                                         $(this).find('text').css('fill', 'green').css('font-weight', 'bold');
                                         $(this).find('text').text(cutLongNames(axisName));
+
+                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+
+                                            case 0:
+                                                $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "#D5DDBB;#FF8C00;#D5DDBB;#D5DDBB" dur = "3.5s" repeatCount = "indefinite" / >');
+                                                break;
+
+                                            case 1:
+
+                                                $(this).css('fill', 'orange');
+                                                $(this).find('text').css('font-weight', 'bold');
+                                                $(this).find('text').css('outline', '2px solid orange');
+                                                $(this).find('text').text(cutLongNames(axisName));
+
+
+
+                                                break;
+
+                                            case 2:
+
+                                                break;
+
+                                        }
+
+
+
+
                                         break;
                                     case '1500':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -598,10 +704,34 @@ $(document).ready(function () {
                                         rect.setAttributeNS(null, 'width', 140);
                                         rect.setAttributeNS(null, 'fill', 'black');
 
-                                        $(this).find('text').css('fill', '#994961').css('font-weight', '900');
+                                        $(this).find('text').css('fill', 'pink').css('font-weight', 'bold');
 
                                         $(this).prepend(rect);
                                         $(this).find('text').text(cutLongNames(axisName));
+
+                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+
+                                            case 0:
+                                                $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "black;#FF8C00;black;black" dur = "3.5s" repeatCount = "indefinite" / >');
+                                                break;
+
+                                            case 1:
+
+                                                $(this).css('fill', 'orange');
+                                                $(this).find('text').css('font-weight', 'bold');
+                                                $(this).find('text').css('outline', '2px solid orange');
+                                                $(this).find('text').text(cutLongNames(axisName));
+
+
+
+                                                break;
+
+                                            case 2:
+
+                                                break;
+
+                                        }
+
                                         break;
                                     case '1500 Backup':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -615,6 +745,31 @@ $(document).ready(function () {
 
                                         $(this).prepend(rect);
                                         $(this).find('text').text(cutLongNames(axisName));
+
+                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+
+                                            case 0:
+                                                $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "grey;#FF8C00;grey;grey" dur = "3.5s" repeatCount = "indefinite" / >');
+                                                break;
+
+                                            case 1:
+
+                                                $(this).css('fill', 'orange');
+                                                $(this).find('text').css('font-weight', 'bold');
+                                                $(this).find('text').css('outline', '2px solid orange');
+                                                $(this).find('text').text(cutLongNames(axisName));
+
+
+
+                                                break;
+
+                                            case 2:
+
+                                                break;
+
+                                        }
+
+
                                         break;
                                     case 'Advocate':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -652,8 +807,49 @@ $(document).ready(function () {
 
                                         $(this).find('text').text(cutLongNames(axisName));
 
-                                    default:
+
+                                        console.log('Study ' + axisName + response.rows[i].doc.lunch);
+
+                                    case 'Analyst':
                                         $(this).find('text').text(cutLongNames(axisName));
+
+                                        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                        rect.setAttributeNS(null, 'x', -140);
+                                        rect.setAttributeNS(null, 'y', -13);
+                                        rect.setAttributeNS(null, 'height', 25);
+                                        rect.setAttributeNS(null, 'width', 140);
+                                        rect.setAttributeNS(null, 'fill', 'white');
+
+
+                                        $(this).prepend(rect);
+
+
+                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+
+                                            case 0:
+
+                                                console.log('Analyst 0' + axisName + ' ' + response.rows[i].doc.lunch);
+
+                                                $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "white;#FF8C00;white;white" dur = "3.5s" repeatCount = "indefinite" / >');
+                                                break;
+
+                                            case 1:
+                                                console.log('Analyst 1' + axisName + ' ' + response.rows[i].doc.lunch);
+                                                $(this).find('text').css('font-weight', 'bold');
+                                                $(this).find('text').css('outline', '2px solid orange');
+                                                $(this).find('text').text(cutLongNames(axisName));
+
+
+
+                                                break;
+
+                                            case 2:
+                                                console.log('Analyst 2' + axisName + ' ' + response.rows[i].doc.lunch);
+                                                break;
+
+                                        }
+
+
                                         break;
 
 
@@ -685,7 +881,7 @@ $(document).ready(function () {
 
                     })
 
-                    //   <rect height="25px" width="140px" fill="green" x="-140" y="-13"></rect>
+
 
 
 
@@ -820,10 +1016,6 @@ $(document).ready(function () {
                     }
 
 
-
-
-
-
                 }
 
             }
@@ -844,20 +1036,6 @@ $(document).ready(function () {
 
             });
 
-            /*
-
-                        $('#fillablemeeting').datepair({
-                            'anchor': $('#meetingstart').val()
-
-
-
-                        });
-
-                        $('#meetingstart').on('change', function () {
-                            $('#fillablemeeting').option('anchor', $('#meetingstart').val());
-                        });
-            */
-
 
             var anchorExampleEl = document.getElementById('fillablemeeting');
             var anchorDatepair = new Datepair(anchorExampleEl, {
@@ -866,9 +1044,7 @@ $(document).ready(function () {
                 defaultTimeDelta: 1800000
             });
 
-            /*            $('#meetingstart').on('change', function () {
-                            anchorDatepair.option('anchor', $('#meetingstart').val());
-                        });*/
+
 
 
 
@@ -877,17 +1053,6 @@ $(document).ready(function () {
         }); //Getting and displaying all documents
 
 
-
-    //  updateRoles();
-    /*
-        $('.meetingtime').timepicker({
-            timeFormat: 'H-i',
-            minTime: '10:00am',
-            maxTime: '6:30pm',
-            step: 10,
-            //   useSelect:true
-
-        });*/
 
 
 
@@ -967,6 +1132,68 @@ function convertTime(timeString) {
 
 }
 
+function deleteLunchesMeetings() {
+
+    var ensure = confirm('Do you really want to delete all lunch and meeting records?');
+
+    if (ensure) {
+
+
+
+        dbGlobal.allDocs({
+                include_docs: true,
+                attachments: true
+            },
+            function (err, response) {
+                if (err) {
+                    return console.log(err);
+                }
+                updateResponse = response;
+
+                var cleanerdocs = [];
+
+                for (var i = 0; i < updateResponse.rows.length; i++) {
+
+                    var toAdd = updateResponse.rows[i].doc;
+
+                    toAdd.lunch = '';
+                    toAdd.meetings = [];
+
+                    cleanerdocs.push(toAdd);
+
+
+                }
+
+                dbGlobal.bulkDocs(cleanerdocs).then(function () {
+
+                    location.reload();
+
+                });
+
+            });
+
+
+    } else return 0;
+
+
+
+}
+
+
+function compareDateWithNow(dateString) {
+
+    var curDate = new Date;
+
+    if ((convertTime(dateString) - curDate.getTime()) <= 0 && (convertTime(dateString) - curDate.getTime()) > -2700000) {
+        return 1;
+    } else if ((convertTime(dateString) - curDate.getTime()) <= 900000 && (convertTime(dateString) - curDate.getTime()) > 0) return 0;
+
+
+    return 2;
+
+
+}
+
 function removeMeeting(clickedButton) {
 
 
@@ -995,13 +1222,13 @@ function removeMeeting(clickedButton) {
             console.log('end client: ' + remEnd + ' end base: ' + convertTime(doc.meetings[i].end));
 
             if (remStart.split(' ')[0] == convertTime(doc.meetings[i].start) && remEnd == convertTime(doc.meetings[i].end)) {
-                    
+
                 console.log('Yes!');
-                
+
                 doc.meetings.splice(i, 1);
-                
+
                 $(clickedButton).parent().remove();
-               
+
                 return dbGlobal.put(doc);
 
             }
@@ -1009,110 +1236,6 @@ function removeMeeting(clickedButton) {
         }
 
     });
-
-    /*
-
-        $(".lunchselector").each(function () {
-
-            //     alert($(this).attr("name"));
-            //    alert($(this).attr('id') + " " + $(this).children("option:selected").text());//.each(function () {
-
-
-            if ($(this).find('option:selected').text() == $(clickedButton).parent().find('.meetingselector').find('option:selected').text()) {
-
-
-                var tempObj = {
-                    _id: "",
-                    meeting: ""
-                };
-
-                tempObj._id = $(this).find('option:selected').text();
-                tempObj.lunch = $(this).attr('id').split('_')[0];
-
-                removeMeetingObj.push(tempObj);
-                removeMeetingObj.push(tempObj._id);
-
-            }
-
-            //   });
-        });
-
-    */
-
-
-
-    // alert($(clickedButton).parent().find('.meetingselector').find('option:selected').text());
-
-
-
-    /*    dbGlobal.allDocs({
-                include_docs: true,
-                attachments: true
-            },
-            function (err, response) {
-                if (err) {
-                    return console.log(err);
-                }
-                updateResponse = response;
-
-
-                for (var i = 0; i < updateResponse.rows.length; i++) {
-
-                    if (updateResponse.rows[i].doc._id == )
-
-
-                        for (var j = 0; j < rolesObj.length; j++) {
-
-
-                            console.log(i + ":" + j);
-
-                            if (rolesObj[j]._id == updateResponse.rows[i].doc._id) {
-
-                                console.log("----");
-                                console.log(i + ":" + j);
-                                console.log(rolesObj[j]._id == updateResponse.rows[i].doc._id);
-                                console.log("rolesObj: " + rolesObj[j]._id);
-                                console.log("updateResponse: " + updateResponse.rows[i].doc._id);
-                                console.log(rolesObj[j]._id == updateResponse.rows[i].doc._id);
-                                console.log("----");
-
-
-                                var toAdd = updateResponse.rows[i].doc;
-
-                                toAdd.role = rolesObj[j].role;
-
-                                docs.push(toAdd);
-                                
-                                {
-                                    "_id": "Alexey Kozlov",
-                                    "_rev": "7-647c36dbec61a87ddb8c0cefc14aa606",
-                                    "role": "Analyst",
-                                    "lunch": "",
-                                    "meetings": {},
-                                    "issupervisor": false
-                                }
-                        
-                                
-
-                            }
-
-                        }
-
-
-                }
-
-                dbGlobal.bulkDocs(docs);
-
-            });*/
-
-    // getAllDocs(dbGlobal);
-
-
-
-
-
-
-
 
 
 }
@@ -1202,7 +1325,7 @@ function updateRoles() {
 
     //???
     getAllDocs(dbGlobal);
-    location.reload();
+    // location.reload();
 
 }
 
@@ -1442,6 +1565,32 @@ function checkCollisions(elementChanged, menuType, oldData) {
 
 
 }
+
+
+
+
+function emptyUnusedField(newValue) {
+
+    if ($(newValue).find('option:selected').text() != '<Choose a person>') {
+
+        var valueToFind = $(newValue).find('option:selected').text();
+        var newId = $(newValue).attr('id');
+
+        $('.lunchselector').each(function () {
+
+            if (valueToFind == $(this).find('option:selected').text() && newId != $(this).attr('id')) {
+
+                $(this).val('<Choose a person>').prop('selected', true);
+                //     $(this).text('<Choose a person>');
+            }
+
+
+        });
+
+
+    }
+}
+
 
 
 

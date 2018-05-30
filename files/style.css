@@ -51,6 +51,43 @@
 }
 
 
+.hovmarker {
+    
+    box-shadow: 0px 0px 0px 0px cadetblue;
+
+
+    position: relative;
+    background-color: #fff;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: default;
+}
+
+.hovmarker::after {
+    
+    box-shadow: 0px 0px 2px 3px cadetblue;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    content: '';
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+}
+
+.hovmarker:hover::after{
+    opacity: 1;
+    
+}
+
+
+
 .employee:hover::after {
     opacity: 1;
 
@@ -96,6 +133,17 @@ select option:disabled {
     height: 20px;
     width: 175px;
     border-radius: 5px;
+    margin-left: 6px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /*color: #9fccad;*/
+}
+
+.meetingselector {
+    height: 20px;
+    width: 175px;
+    border-radius: 5px;
+    /*color: #9fccad;*/
 }
 
 
@@ -167,16 +215,26 @@ select option:disabled {
 }
 
 .blink_me {
-  animation: blinker 1s linear infinite;
+    animation: blinker 1s linear infinite;
 }
 
 @keyframes blinker {
-  50% {
-    opacity: 0;
-  }
+    50% {
+        opacity: 0;
+    }
 }
 
-.meetingend{
+.meetingend {
     margin-right: 3px;
 }
 
+.lunchwrapper {
+    display: flex;
+}
+
+.cleaner {
+    height: 35px;
+    width: 150px;
+    margin-left: 20px;
+    align-self: center;
+}
