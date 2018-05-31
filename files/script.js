@@ -254,19 +254,27 @@ $(document).ready(function () {
 
         });*/
 
+    /*
+        $('body').on('mouseenter', '.lunchhoverwrapper', function () {
+            
+            var stringTimeFinder = '.time:contains(' +  $(this).attr('id').split('_')[0] + ')';
+            
+            var clickedSelect = $(this).parent().parent().find(stringTimeFinder);
+            
+            clickedSelect.addClass('hovtime_enabled');
+            
+           
+            clickedSelect.removeClass('hovtime_disabled');
 
-    $('body').on('mouseenter', '.lunchhoverwrapper', function () {
 
-        $(this).addClass('hovmarker');
-
-    });
+        });*/
 
 
-/*    $('body').on('mouseleave', '.lunchselector', function () {
+    /*    $('body').on('mouseleave', '.lunchselector', function () {
 
-        $(this).toggleClass('hovmarker');
+            $(this).toggleClass('hovmarker');
 
-    });*/
+        });*/
 
 
 
@@ -426,9 +434,9 @@ $(document).ready(function () {
 
                 var div = $('<div/>').addClass('lunchrecord').appendTo('#lunches'),
                     div2 = $('<div/>').addClass('time').text(lunchtime[i]).appendTo(div),
-                    lunchwrap = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),
-                    lunchwrap2 = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),
-                    lunchwrap3 = $('<div/>').addClass('lunchhoverwrapper').appendTo(div),         
+                    lunchwrap = $('<div/>').addClass('lunchhoverwrapper').addClass('hovmarker').appendTo(div),
+                    lunchwrap2 = $('<div/>').addClass('lunchhoverwrapper').addClass('hovmarker').appendTo(div),
+                    lunchwrap3 = $('<div/>').addClass('lunchhoverwrapper').addClass('hovmarker').appendTo(div),
                     select = $('<select/>').addClass('lunchselector').attr('id', lunchtime[i] + '_1').appendTo(lunchwrap),
                     disabledOption = $('<option/>')
                     .text('<Choose a person>')
@@ -603,7 +611,28 @@ $(document).ready(function () {
                         for (i in response.rows) {
                             if (axisName == response.rows[i].doc._id) {
 
-                                // console.log('axisname: ' + axisName);
+                                var lunchOrMeetingmarker = 2;
+
+
+
+                                if (response.rows[i].doc.lunch != '') {
+
+                                    if (compareDateWithNow(response.rows[i].doc.lunch) != 2) lunchOrMeetingmarker = compareDateWithNow(response.rows[i].doc.lunch);
+
+
+                                } else if (response.rows[i].doc.meetings.length != 0) {
+
+                                    for (j in response.rows[i].meetings) {
+
+                                        if (compareTwoDatesWithNow(response.rows[i].meetings[j].start, response.rows[i].meetings[j].end) != 2) lunchOrMeetingmarker = compareTwoDatesWithNow(response.rows[i].meetings[j].start, response.rows[i].meetings[j].end);
+
+
+                                    }
+
+                                }
+
+
+                                console.log('axisname: ' + axisName + ' role: ' + response.rows[i].doc.role);
 
                                 switch (response.rows[i].doc.role) {
                                     case 'Dispatcher':
@@ -622,7 +651,8 @@ $(document).ready(function () {
                                         $(this).find('text').text(cutLongNames(axisName));
 
 
-                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        //     switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        switch (lunchOrMeetingmarker) {
 
                                             case 0:
                                                 $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "red;#FF8C00;red;red" dur = "3.5s" repeatCount = "indefinite" / >');
@@ -645,15 +675,6 @@ $(document).ready(function () {
 
                                         }
 
-                                        /*   $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "#800;#f00;#800;#800" dur = "0.8s" repeatCount = "indefinite" / >');*/
-
-                                        /*               <animate attributeType = "XML"
-                                                       attributeName = "fill"
-                                                       values = "#800;#f00;#800;#800"
-                                                       dur = "0.8s"
-                                                       repeatCount = "indefinite" / >*/
-
-
                                         break;
                                     case 'Backup':
                                         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -669,7 +690,8 @@ $(document).ready(function () {
                                         $(this).find('text').css('fill', 'green').css('font-weight', 'bold');
                                         $(this).find('text').text(cutLongNames(axisName));
 
-                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        switch (lunchOrMeetingmarker) {
+
 
                                             case 0:
                                                 $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "#D5DDBB;#FF8C00;#D5DDBB;#D5DDBB" dur = "3.5s" repeatCount = "indefinite" / >');
@@ -709,7 +731,8 @@ $(document).ready(function () {
                                         $(this).prepend(rect);
                                         $(this).find('text').text(cutLongNames(axisName));
 
-                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        switch (lunchOrMeetingmarker) {
+
 
                                             case 0:
                                                 $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "black;#FF8C00;black;black" dur = "3.5s" repeatCount = "indefinite" / >');
@@ -746,7 +769,8 @@ $(document).ready(function () {
                                         $(this).prepend(rect);
                                         $(this).find('text').text(cutLongNames(axisName));
 
-                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        switch (lunchOrMeetingmarker) {
+
 
                                             case 0:
                                                 $(this).find('rect').html('<animate attributeType = "XML" attributeName = "fill" values = "grey;#FF8C00;grey;grey" dur = "3.5s" repeatCount = "indefinite" / >');
@@ -824,7 +848,8 @@ $(document).ready(function () {
                                         $(this).prepend(rect);
 
 
-                                        switch (compareDateWithNow(response.rows[i].doc.lunch)) {
+                                        switch (lunchOrMeetingmarker) {
+
 
                                             case 0:
 
@@ -946,6 +971,8 @@ $(document).ready(function () {
                 var option = $('<option/>').val(response.rows[k].doc._id).text(response.rows[k].doc._id).appendTo(fillableSelector);
 
             }
+        
+        
 
             var fillablediv = $('<div/>')
                 .addClass('meetingrecord').attr('id', 'fillablemeeting')
@@ -955,11 +982,12 @@ $(document).ready(function () {
                 .appendTo(fillablediv),
                 fillableinput2 = $('<input/>').addClass('meetingtime end').attr('id', 'meetingend').attr('type', 'text').attr('pattern', '^1[0-9]-[0-5][0-9]$')
 
-                .appendTo(fillablediv);
+                .appendTo(fillablediv),
+                fillabledivwrapper = $('<div/>').addClass('hovmarker').addClass('meethoverwrapper').appendTo(fillablediv);
 
 
 
-            fillableSelector.appendTo(fillablediv);
+            fillableSelector.appendTo(fillabledivwrapper);
             $('<button/>').addClass('meetingcreator').text('Add').attr('onClick', 'updateMeetings()').appendTo(fillablediv);
 
 
@@ -1180,16 +1208,35 @@ function deleteLunchesMeetings() {
 }
 
 
+function compareTwoDatesWithNow(meetStart, meetEnd) {
+
+    var curDate = new Date;
+
+    if ((convertTime(meetStart) - curDate.getTime()) <= 0 && (convertTime(meetEnd) - curDate.getTime()) >= 0) {
+        return 'ongoing';
+    } else if ((convertTime(meetStart) - curDate.getTime()) <= 900000 && (convertTime(meetEnd) - curDate.getTime()) >= 0) {
+        return '15 mins later'
+    } else return 'already ended or more than 15 mins in future';
+
+}
+
+
+
+
+
+
 function compareDateWithNow(dateString) {
 
     var curDate = new Date;
 
     if ((convertTime(dateString) - curDate.getTime()) <= 0 && (convertTime(dateString) - curDate.getTime()) > -2700000) {
         return 1;
-    } else if ((convertTime(dateString) - curDate.getTime()) <= 900000 && (convertTime(dateString) - curDate.getTime()) > 0) return 0;
+    } else if ((convertTime(dateString) - curDate.getTime()) <= 900000 && (convertTime(dateString) - curDate.getTime()) > 0) {
+        return 0;
+    } else return 2;
 
 
-    return 2;
+
 
 
 }
